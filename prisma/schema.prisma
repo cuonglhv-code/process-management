@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  staff
+  owner
+  admin
+}
+
+enum StepType {
+  action
+  decision
+  terminal
+  annotation
+}
+
+enum EdgeStyle {
+  solid
+  dashed
+}
+
+enum FormType {
+  download
+  external
+  internal
+}
+
+model Profile {
+  id        String    @id
+  email     String    @unique
+  name      String?
+  role      Role      @default(staff)
+  processes Process[]
+  createdAt DateTime  @default(now())
+}
+
+model Process {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  category    String?
+  tags        String[]
+  owner       Profile  @relation(fields: [ownerId], references: [id])
+  ownerId     String
+  steps       Step[]
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Step {
+  id              String   @id @default(cuid())
+  process         Process  @relation(fields: [processId], references: [id], onDelete: Cascade)
+  processId       String
+  type            StepType
+  label           String
+  position        Json
+  responsibleRole String?
+  helpText        String?
+  richNotes       String?
+  linkedForms     Form[]
+  incomingEdges   StepEdge[] @relation("step_incoming")
+  outgoingEdges   StepEdge[] @relation("step_outgoing")
+  order           Int
+}
+
+model StepEdge {
+  id       String    @id @default(cuid())
+  source   Step      @relation("step_outgoing", fields: [sourceId], references: [id], onDelete: Cascade, map: "step_edge_source_fkey")
+  sourceId String
+  target   Step      @relation("step_incoming", fields: [targetId], references: [id], onDelete: Cascade, map: "step_edge_target_fkey")
+  targetId String
+  label    String?
+  style    EdgeStyle @default(solid)
+}
+
+model Form {
+  id     String   @id @default(cuid())
+  step   Step     @relation(fields: [stepId], references: [id], onDelete: Cascade)
+  stepId String
+  label  String
+  url    String
+  type   FormType
+}
