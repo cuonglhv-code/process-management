@@ -23,13 +23,12 @@ export async function GET(request: NextRequest) {
   const q = searchParams.get("q")?.toLowerCase();
   const category = searchParams.get("category");
 
-  const isOwnerOrAdmin =
-    profile?.role === "owner" || profile?.role === "admin";
+  const isAdmin = profile?.role === "admin";
 
   const where: Record<string, unknown> = {};
 
-  if (!isOwnerOrAdmin) {
-    where.OR = [{ published: true }, { ownerId: user.id }];
+  if (!isAdmin) {
+    where.published = true;
   }
 
   if (category) {
@@ -86,7 +85,7 @@ export async function POST(request: NextRequest) {
     where: { id: user.id },
   });
 
-  if (!profile || (profile.role !== "owner" && profile.role !== "admin")) {
+  if (!profile || profile.role !== "admin") {
     return NextResponse.json(
       { error: "Forbidden", code: "FORBIDDEN" },
       { status: 403 }

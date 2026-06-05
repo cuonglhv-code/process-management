@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Table,
@@ -17,18 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { UserPlus } from "lucide-react";
 import { toast } from "sonner";
 
 interface UserProfile {
@@ -41,7 +29,6 @@ interface UserProfile {
 
 const roleColors: Record<string, string> = {
   admin: "bg-brand-purple text-white",
-  owner: "bg-brand-teal text-white",
   staff: "bg-muted text-muted-foreground",
 };
 
@@ -51,9 +38,6 @@ interface AdminUsersClientProps {
 
 export function AdminUsersClient({ users }: AdminUsersClientProps) {
   const router = useRouter();
-  const [inviteEmail, setInviteEmail] = useState("");
-  const [inviteOpen, setInviteOpen] = useState(false);
-  const [inviteLoading, setInviteLoading] = useState(false);
 
   async function handleRoleChange(userId: string, role: string | null) {
     if (!role) return;
@@ -77,66 +61,9 @@ export function AdminUsersClient({ users }: AdminUsersClientProps) {
     }
   }
 
-  async function handleInvite(e: React.FormEvent) {
-    e.preventDefault();
-    setInviteLoading(true);
-
-    try {
-      const res = await fetch("/api/invite", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: inviteEmail }),
-      });
-
-      if (!res.ok) {
-        const err = await res.json();
-        toast.error(err.error);
-        return;
-      }
-
-      toast.success("Invitation sent");
-      setInviteOpen(false);
-      setInviteEmail("");
-      router.refresh();
-    } catch {
-      toast.error("Failed to send invitation");
-    } finally {
-      setInviteLoading(false);
-    }
-  }
-
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">User management</h1>
-        <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
-          <DialogTrigger>
-            <UserPlus className="h-4 w-4 mr-2 inline" />
-            Invite user
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Invite user</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleInvite} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="invite-email">Email address</Label>
-                <Input
-                  id="invite-email"
-                  type="email"
-                  value={inviteEmail}
-                  onChange={(e) => setInviteEmail(e.target.value)}
-                  placeholder="newuser@jaxtina.com"
-                  required
-                />
-              </div>
-              <Button type="submit" disabled={inviteLoading}>
-                {inviteLoading ? "Sending..." : "Send invitation"}
-              </Button>
-            </form>
-          </DialogContent>
-        </Dialog>
-      </div>
+      <h1 className="text-2xl font-bold">User management</h1>
 
       <div className="rounded-md border">
         <Table>
@@ -187,7 +114,6 @@ export function AdminUsersClient({ users }: AdminUsersClientProps) {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="staff">Staff</SelectItem>
-                        <SelectItem value="owner">Owner</SelectItem>
                         <SelectItem value="admin">Admin</SelectItem>
                       </SelectContent>
                     </Select>

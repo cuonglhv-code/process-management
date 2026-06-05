@@ -39,9 +39,8 @@ export default async function ProcessEditPage({
   });
 
   const isAdmin = profile?.role === "admin";
-  const isOwner = process.ownerId === user.id;
 
-  if (!isAdmin && !isOwner) {
+  if (!isAdmin) {
     notFound();
   }
 

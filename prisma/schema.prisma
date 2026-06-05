@@ -8,7 +8,6 @@ datasource db {
 
 enum Role {
   staff
-  owner
   admin
 }
 

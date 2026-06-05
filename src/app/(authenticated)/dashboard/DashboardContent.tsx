@@ -37,7 +37,7 @@ export function DashboardContent({
   const [processes, setProcesses] = useState<ProcessData[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const isOwnerOrAdmin = role === "owner" || role === "admin";
+  const isAdmin = role === "admin";
 
   const fetchProcesses = useCallback(async () => {
     setLoading(true);
@@ -65,7 +65,7 @@ export function DashboardContent({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Process Library</h1>
-        {isOwnerOrAdmin && (
+        {isAdmin && (
           <Button onClick={() => router.push("/processes/new")}>
             <Plus className="h-4 w-4 mr-2" />
             New process
@@ -133,11 +133,11 @@ export function DashboardContent({
           <p className="text-sm text-muted-foreground mt-1">
             {query
               ? "Try a different search term"
-              : isOwnerOrAdmin
+              : isAdmin
               ? "Create your first process to get started"
               : "There are no published processes yet"}
           </p>
-          {isOwnerOrAdmin && !query && (
+          {isAdmin && !query && (
             <Button className="mt-4" onClick={() => router.push("/processes/new")}>
               <Plus className="h-4 w-4 mr-2" />
               Create process

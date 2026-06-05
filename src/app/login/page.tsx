@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 
+const ALLOWED_DOMAIN = "@jaxtina.com";
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -15,13 +17,19 @@ export default function LoginPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    if (!email.toLowerCase().endsWith(ALLOWED_DOMAIN)) {
+      toast.error(`Only @jaxtina.com emails are accepted`);
+      return;
+    }
+
     setLoading(true);
 
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        shouldCreateUser: false,
+        shouldCreateUser: true,
       },
     });
 
@@ -58,6 +66,9 @@ export default function LoginPage() {
           <CardTitle className="text-center text-2xl">
             Jaxtina Process Library
           </CardTitle>
+          <p className="text-center text-sm text-muted-foreground mt-1">
+            Sign in with your @jaxtina.com email
+          </p>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">

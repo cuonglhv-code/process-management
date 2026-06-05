@@ -46,10 +46,9 @@ export async function GET(
     where: { id: user.id },
   });
 
-  const isOwnerOrAdmin =
-    profile?.role === "admin" || process.ownerId === user.id;
+  const isAdmin = profile?.role === "admin";
 
-  if (!process.published && !isOwnerOrAdmin) {
+  if (!process.published && !isAdmin) {
     return NextResponse.json(
       { error: "Process not found", code: "NOT_FOUND" },
       { status: 404 }
@@ -94,9 +93,8 @@ export async function PATCH(
   }
 
   const isAdmin = profile?.role === "admin";
-  const isOwner = process.ownerId === user.id;
 
-  if (!isAdmin && !isOwner) {
+  if (!isAdmin) {
     return NextResponse.json(
       { error: "Forbidden", code: "FORBIDDEN" },
       { status: 403 }

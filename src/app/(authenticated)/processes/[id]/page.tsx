@@ -40,14 +40,13 @@ export default async function ProcessViewPage({
     where: { id: user.id },
   });
 
-  const isOwnerOrAdmin =
-    profile?.role === "admin" || process.ownerId === user.id;
+  const isAdmin = profile?.role === "admin";
 
-  if (!process.published && !isOwnerOrAdmin) {
+  if (!process.published && !isAdmin) {
     notFound();
   }
 
-  const canEdit = isOwnerOrAdmin;
+  const canEdit = isAdmin;
 
   return <ProcessViewClient process={process as any} canEdit={canEdit} />;
 }

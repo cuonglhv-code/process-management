@@ -52,7 +52,7 @@ export default function Home() {
             <div className="text-primary text-xl mb-2 font-bold">02</div>
             <h3 className="font-semibold mb-1">Role-based access</h3>
             <p className="text-sm text-muted-foreground">
-              Staff browse read-only. Owners and admins maintain processes and
+              Staff browse read-only. Admins maintain processes and
               manage the library.
             </p>
           </div>

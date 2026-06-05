@@ -36,31 +36,6 @@ export async function requireRole(...roles: Role[]) {
   return session;
 }
 
-export async function requireOwnerOrAdmin(processId: string) {
-  const session = await getSessionWithRole();
-
-  if (!session) {
-    throw new AuthError("Unauthorized", "UNAUTHORIZED");
-  }
-
-  if (session.profile.role === "admin") return session;
-
-  const process = await prisma.process.findUnique({
-    where: { id: processId },
-    select: { ownerId: true },
-  });
-
-  if (!process) {
-    throw new AuthError("Process not found", "NOT_FOUND");
-  }
-
-  if (process.ownerId !== session.profile.id) {
-    throw new AuthError("Forbidden", "FORBIDDEN");
-  }
-
-  return session;
-}
-
 export class AuthError extends Error {
   code: string;
 

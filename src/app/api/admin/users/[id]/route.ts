@@ -34,7 +34,7 @@ export async function PATCH(
   const body = await request.json();
   const { role } = body;
 
-  if (!["staff", "owner", "admin"].includes(role)) {
+  if (!["staff", "admin"].includes(role)) {
     return NextResponse.json(
       { error: "Invalid role", code: "BAD_REQUEST" },
       { status: 400 }

@@ -37,9 +37,8 @@ export async function PATCH(
   });
 
   const isAdmin = profile?.role === "admin";
-  const isOwner = step.process.ownerId === user.id;
 
-  if (!isAdmin && !isOwner) {
+  if (!isAdmin) {
     return NextResponse.json(
       { error: "Forbidden", code: "FORBIDDEN" },
       { status: 403 }
@@ -101,9 +100,8 @@ export async function DELETE(
   });
 
   const isAdmin = profile?.role === "admin";
-  const isOwner = step.process.ownerId === user.id;
 
-  if (!isAdmin && !isOwner) {
+  if (!isAdmin) {
     return NextResponse.json(
       { error: "Forbidden", code: "FORBIDDEN" },
       { status: 403 }

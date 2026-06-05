@@ -14,11 +14,10 @@ export default async function DashboardPage() {
     where: { id: user.id },
   });
 
-  const isOwnerOrAdmin =
-    profile?.role === "owner" || profile?.role === "admin";
+  const isAdmin = profile?.role === "admin";
 
   const categories = await prisma.process.findMany({
-    where: isOwnerOrAdmin
+    where: isAdmin
       ? {}
       : { OR: [{ published: true }, { ownerId: user.id }] },
     select: { category: true },

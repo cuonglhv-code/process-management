@@ -37,9 +37,8 @@ export async function POST(
   }
 
   const isAdmin = profile?.role === "admin";
-  const isOwner = process.ownerId === user.id;
 
-  if (!isAdmin && !isOwner) {
+  if (!isAdmin) {
     return NextResponse.json(
       { error: "Forbidden", code: "FORBIDDEN" },
       { status: 403 }
